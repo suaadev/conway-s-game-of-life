@@ -1,21 +1,20 @@
 class GameEngine:
-
     def verify_cell(self, i, j, board) -> int:
 
         cell = board[i][j]
 
-        neighboorhods_count = self.calculateNeighboorhods(board, i, j)
+        total_neighbors = self.get_total_neighbors(board, i, j)
 
-        if cell == 0 and neighboorhods_count == 3:
+        if cell == 0 and total_neighbors == 3:
             cell = 1
 
-        elif cell == 1 and neighboorhods_count < 2 or neighboorhods_count > 3:
+        elif cell == 1 and total_neighbors < 2 or total_neighbors > 3:
             cell = 0
 
         return cell
 
-    def calculateNeighboorhods(self, board: list[list[int]], i: int, j: int) -> int:
-        neighboorhods_count = 0
+    def get_total_neighbors(self, board: list[list[int]], i: int, j: int) -> int:
+        total_neighbors = 0
         rows = len(board)
         columns = len(board[0])
 
@@ -34,6 +33,6 @@ class GameEngine:
                 ):
                     continue
 
-                neighboorhods_count += 1 if board[ni][nc] > 0 else 0
+                total_neighbors += 1 if board[ni][nc] > 0 else 0
 
-        return neighboorhods_count
+        return total_neighbors
