@@ -2,8 +2,8 @@ from sys import exit
 
 import pygame
 
-from board import Board
 from game_egine import GameEngine
+from simulation import Simulation
 
 
 class MainWindow:
@@ -22,12 +22,14 @@ class MainWindow:
         )
         self.game_engine = game_engine
         self.clock = pygame.time.Clock()
-        self.board = Board(self.game_engine, self.display)
+        self.simulation = Simulation(self.game_engine, self.display)
+
+        self.generation_font: pygame.font.SysFont = pygame.font.SysFont("arial", 15)
 
     def run(self):
 
         last_time = pygame.time.get_ticks()
-        current_window_to_simulate = self.MIN_WINDOW_MS_TO_SIMULATE
+        current_window_to_simulate = 30
 
         while True:
             events = pygame.event.get()
@@ -40,24 +42,24 @@ class MainWindow:
                 if event.type == pygame.VIDEORESIZE:
                     size = pygame.display.get_window_size()
 
-                    self.board.resize(size[0], size[1])
+                    self.simulation.resize(size[0], size[1])
 
-                if event.type == pygame.MOUSEBUTTONUP:
-                    self.board.release_alive_cells_memory()
+                if self.simulation.simulation and event.type == pygame.MOUSEBUTTONUP:
+                    self.simulation.release_cells_memory()
 
                 if event.type == pygame.KEYDOWN:
                     keys = pygame.key.get_pressed()
                     if keys[pygame.K_s]:
-                        if not self.board.simulation:
-                            self.board.start_simulation()
+                        if not self.simulation.simulation:
+                            self.simulation.start()
                         else:
-                            self.board.stop_simulation()
+                            self.simulation.stop()
 
                     if keys[pygame.K_c]:
-                        self.board.clear()
+                        self.simulation.clear()
 
                     if keys[pygame.K_b]:
-                        self.board.switch_cell_border()
+                        self.simulation.switch_cell_border()
 
                     if (
                         keys[pygame.K_m]
@@ -75,20 +77,25 @@ class MainWindow:
 
             if mouse_pressed[0]:
                 mouse_position = pygame.mouse.get_pos()
-                self.board.set_cell_status(mouse_position[0], mouse_position[1], True)
+                self.simulation.set_cell_status(
+                    mouse_position[0], mouse_position[1], True
+                )
             elif mouse_pressed[2]:
                 mouse_position = pygame.mouse.get_pos()
-                self.board.set_cell_status(mouse_position[0], mouse_position[1], False)
+                self.simulation.set_cell_status(
+                    mouse_position[0], mouse_position[1], False
+                )
 
             current_time = pygame.time.get_ticks()
+
             if (
-                self.board.simulation
+                self.simulation.simulation
                 and current_time - last_time >= current_window_to_simulate
             ):
-                self.board.next_generation()
+                self.simulation.next_generation()
                 last_time = current_time
 
-            self.display.blit(self.board.surface, self.board.surface_rect)
+            self.display.blit(self.simulation.surface, self.simulation.surface_rect)
 
             pygame.display.update()
             self.clock.tick(self.FPS_RATE)

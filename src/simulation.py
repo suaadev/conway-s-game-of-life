@@ -1,10 +1,9 @@
 from math import ceil
 
-import numpy as np
 import pygame
 
 
-class Board:
+class Simulation:
     BACKGROUND_COLOR = (15, 15, 15)
     CELL_ALIVE_COLOR = (198, 229, 245)
     CELL_DEAD_COLOR = (0, 0, 0)
@@ -18,15 +17,12 @@ class Board:
         self.surface_height = parent_surface_size[1]
         self.surface.fill(self.BACKGROUND_COLOR)
         self.surface_rect = self.surface.get_rect(topleft=(0, 0))
-
         self.cell_border = 0
         self.game_engine = game_engine
         self.simulation = False
-        self.build()
-        self.alive_cells = set()
-        self.alive_cells_memory = set()
+        self.build_simulation()
 
-    def build(self):
+    def build_simulation(self):
         self.max_rows = ceil(self.surface_height / self.CELL_SIZE)
         self.max_columns = ceil(self.surface_width / self.CELL_SIZE)
 
@@ -44,9 +40,9 @@ class Board:
                 column_cell_rects.append(rect)
             cell_rects.append(column_cell_rects)
 
-        self.generation = np.zeros((self.max_rows, self.max_columns))
+        self.game_engine.build(self.max_rows, self.max_columns)
+
         self.cell_rects = cell_rects
-        return self.generation
 
     def resize(self, width, heigth):
         self.surface_height = heigth
@@ -54,44 +50,47 @@ class Board:
         self.surface = pygame.Surface((width, heigth))
         self.surface.fill(self.BACKGROUND_COLOR)
         self.surface_rect = self.surface.get_rect(topleft=(0, 0))
-        self.build()
+        self.build_simulation()
 
     def switch_cell_border(self):
         self.cell_border = 0 if self.cell_border == 1 else 1
-        for i in range(len(self.generation)):
-            for j in range(len(self.generation[0])):
-                cell_value = self.generation[i][j]
+        for i in range(self.game_engine.max_rows):
+            for j in range(self.game_engine.max_columns):
+                cell_value = self.game_engine.generation[i][j]
                 self.update_rect(i, j, cell_value)
 
     def set_cell_status(self, coord_x: int, coord_y: int, status: bool) -> tuple[int]:
         j = coord_x // self.CELL_SIZE  # columns
         i = coord_y // self.CELL_SIZE  # rows
-        before_cell_value = self.generation[i][j]
-        new_cell_value = 1 if status else 0
-        self.generation[i][j] = new_cell_value
+
+        (new_cell_value, before_cell_value) = self.game_engine.set_value_cell(
+            i, j, status, in_memo=self.simulation
+        )
 
         # Optimization  only render the cell that have change
         if before_cell_value != new_cell_value:
             self.update_rect(i, j, new_cell_value)
 
-        if new_cell_value == 1:
-            if self.simulation:
-                self.alive_cells_memory.add((i, j))
-            else:
-                self.alive_cells.add((i, j))
-
         return (i, j)
 
-    def release_alive_cells_memory(self):
-        for i in self.alive_cells_memory:
-            self.alive_cells.add(i)
-        self.alive_cells_memory = set()
+    def release_cells_memory(self):
+        self.game_engine.release_cells_memory()
 
-    def start_simulation(self):
+    def start(self):
         self.simulation = True
 
-    def stop_simulation(self):
+    def stop(self):
         self.simulation = False
+
+    def clear(self):
+        self.stop()
+        self.game_engine.reset()
+        for i in range(self.game_engine.max_rows):
+            for j in range(self.game_engine.max_rows):
+                self.update_rect(i, j, 0)
+
+    def next_generation(self):
+        self.game_engine.next_generation(lambda i, j, v: self.update_rect(i, j, v))
 
     def update_rect(self, i, j, new_cell_value):
         cell_rect = self.cell_rects[i][j]
@@ -103,44 +102,3 @@ class Board:
             pygame.draw.rect(self.surface, self.BACKGROUND_COLOR, cell_rect, 0)
 
         pygame.draw.rect(self.surface, color, cell_rect, border)
-
-    def clear(self):
-        self.stop_simulation()
-        for i, j in self.alive_cells:
-            self.generation[i][j] = 0
-            self.update_rect(i, j, 0)
-
-        self.alive_cells_memory = set()
-        self.alive_cells = set()
-
-    def next_generation(self):
-        next_alive_cells = set()
-
-        board_copy = self.generation.copy() if self.simulation else self.generation
-        explored_cells = {}
-        for i, j in self.alive_cells:
-            row_min_i = max(0, i - 1)
-            row_max_i = min(self.max_rows, i + 2)
-
-            col_min_i = max(0, j - 1)
-            col_max_i = min(self.max_columns, j + 2)
-
-            for k in range(row_min_i, row_max_i):
-                for p in range(col_min_i, col_max_i):
-                    if explored_cells.get((k, p)) is not None:
-                        continue
-
-                    cell_value = self.generation[k][p]
-
-                    new_cell_value = self.game_engine.verify_cell(k, p, self.generation)
-
-                    if cell_value != new_cell_value:
-                        self.update_rect(k, p, new_cell_value)
-                        board_copy[k][p] = new_cell_value
-
-                    if new_cell_value == 1:
-                        next_alive_cells.add((k, p))
-                    explored_cells[(k, p)] = True
-
-        self.alive_cells = next_alive_cells
-        self.generation = board_copy
