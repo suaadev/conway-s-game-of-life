@@ -2,16 +2,15 @@ from sys import exit
 
 import pygame
 
-from game_egine import GameEngine
 from simulation import Simulation
 
 
 class MainWindow:
     FPS_RATE = 60
     MAX_WINDOW_MS_TO_SIMULATE = 200
-    MIN_WINDOW_MS_TO_SIMULATE = 10
+    MIN_WINDOW_MS_TO_SIMULATE = 0
 
-    def __init__(self, width: int, heigth: int, game_engine: GameEngine):
+    def __init__(self, width: int, heigth: int):
 
         self.heigth = heigth
         self.width = width
@@ -20,16 +19,15 @@ class MainWindow:
         self.display = pygame.display.set_mode(
             (self.width, self.heigth), pygame.RESIZABLE
         )
-        self.game_engine = game_engine
-        self.clock = pygame.time.Clock()
-        self.simulation = Simulation(self.game_engine, self.display)
 
+        self.clock = pygame.time.Clock()
+        self.simulation = Simulation(self.display)
         self.generation_font: pygame.font.SysFont = pygame.font.SysFont("arial", 15)
 
     def run(self):
 
         last_time = pygame.time.get_ticks()
-        current_window_to_simulate = 30
+        current_window_to_simulate = 40
 
         while True:
             events = pygame.event.get()
