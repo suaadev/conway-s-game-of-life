@@ -155,7 +155,7 @@ Asegúrate de tener instalado en tu sistema:
 1. **Clona este repositorio:**
 
 ```bash
-git clone [https://github.com/suaadev/conway-s-game-of-life](https://github.com/suaadev/conway-s-game-of-life)
+git clone https://github.com/suaadev/conway-s-game-of-life.git
 cd conway-s-game-of-life
 
 ```
