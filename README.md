@@ -17,7 +17,7 @@
 
 ## Acerca del proyecto
 
-Hace un año me topé con un juego llamado `game-of-life` del matemático británico John Conway y me resultó muy fascinante cómo, con tan solo 4 simples reglas, se puede llegar a simular un comportamiento tan complejo y extraordinario. Así que, motivado por este concepto, decidí implementar el juego utilizando Python y Pygame para darle representación visual. El resultado fue un simulador interactivo con el que podemos entender el comportamiento de estas células y observar múltiples patrones fascinantes que emergen a partir de una configuración inicial.
+Hace un año me topé con un juego llamado `game-of-life` del matemático británico John Conway y me resultó muy fascinante cómo, con tan solo 4 simples reglas, se puede llegar a simular un comportamiento tan complejo y extraordinario. Así que, motivado y emocionado, decidí hacer la implementación de este juego usando Python y Pygame de base para poder darle vida. El resultado fue algo fascinante con el cual podemos entender y visualizar el comportamiento de este juego, además de observar múltiples patrones que nacen de tan solo una configuración inicial de un conjunto de células vivas.
 
 <div>
 <img style="display: block; margin: 0 auto" src="docs/ezgif-12a5b859dc35bc1b.gif">
@@ -25,30 +25,28 @@ Hace un año me topé con un juego llamado `game-of-life` del matemático britá
 
 ## Comportamiento
 
-El Juego de la Vida se desarrolla en un mundo bidimensional infinito donde cada celda representa una célula que tiene 2 estados posibles: viva o muerta. Para determinar el estado de una célula en la siguiente generación, se aplican 4 reglas fundamentales establecidas por John Conway:
+El Juego de la Vida se basa en un mundo bidimensional infinito donde cada celda representa una célula que tiene 2 estados: viva o muerta. Para determinar el estado de una célula en su siguiente generación es donde entran en juego las 4 simples reglas que el matemático John Conway estableció:
 
-- **Soledad:** Cualquier célula viva con menos de dos vecinas vivas muere (infrapoblación).
-- **Supervivencia:** Cualquier célula viva con dos o tres vecinas vivas permanece viva en la siguiente generación.
-- **Sobrepoblación:** Toda célula viva con más de tres vecinas vivas muere.
-- **Reproducción:** Toda célula muerta que tenga exactamente tres vecinas vivas se convierte en una célula viva.
+- Cualquier célula viva que tenga menos de dos vecinas vivas muere, como si estuviera infrapoblada.
+- Cualquier célula viva que tenga dos o tres vecinas vivas sobrevive hasta la siguiente generación.
+- Toda célula viva que tenga más de tres vecinas vivas muere, como si estuviera sobrepoblada.
+- Toda célula muerta que tenga exactamente tres vecinas vivas se convierte en una célula viva, como si se hubiera reproducido.
 
-Estas reglas son apasionantes porque simulan dinámicas de un ecosistema natural: las células mueren por aislamiento o superpoblación, o nacen si las condiciones de su entorno son ideales. De ahí su nombre, pues demuestra cómo reglas sencillas pueden generar comportamientos orgánicos.
+Estas reglas son muy interesantes debido a que, si lo vemos en relación con el comportamiento natural del mundo en el que vivimos, podemos observar que una célula muere por sobrepoblación o por soledad, o si simplemente se dan las condiciones perfectas en su entorno puede surgir la vida, ¿increíble, no? De ahí surge el nombre del juego de la vida, porque simula la vida y con tan solo 4 reglas se puede determinar si hay vida o no.
 
 #### Generaciones
 
-La evolución del sistema ocurre en "generaciones", donde cada paso representa una iteración del estado actual del mundo. Dependiendo de la configuración inicial, una simulación puede tener dos desenlaces:
-1. **Extinción (Estado final):** Se llega a un punto donde todas las células mueren y el juego termina.
-2. **Estructuras Cíclicas o Infinitas:** Se forma un patrón recurrente donde las células nacen y mueren de forma periódica, permitiendo que la simulación continúe indefinidamente.
+El juego cuenta con lo que se denomina generaciones, donde cada generación es simplemente una iteración de un estado actual del mundo en la cual, con las reglas anteriores, podemos obtener un patrón resultante. Podemos iterar tantas generaciones como queramos o simplemente obtener infinitas generaciones. Pero, ¿habrá algún momento donde finalice? Sí. Se puede llegar al caso en donde, partiendo de una configuración inicial, se alcance una generación donde simplemente todas las células mueran; este se considera un estado final del juego. Por otro lado, dada una configuración inicial, podemos tener infinitas generaciones si se llega a un estado recurrente donde un conjunto de células vivas forma una estructura que nace y muere en un ciclo; esto se conoce como estructura cíclica.
 
 ## Implementación
 
-Para llevar esta lógica a un entorno práctico, representamos el mundo como una matriz finita de dimensiones $N \times M$. Cada posición almacena el estado de una célula (`0` para muerta y `1` para viva). En cada iteración, el motor calcula los vecinos adyacentes de cada celda (incluyendo las diagonales) para determinar su estado en la siguiente generación. Toda esta lógica algorítmica fue desarrollada en Python, utilizando Pygame para renderizar la interfaz gráfica de usuario.
+Para la implementación de este juego vamos a contar con un mundo finito de $N \times M$ para efectos prácticos. Este mundo va a ser representado como una matriz donde cada posición representará el estado de una célula (0 representa ausencia de vida y 1 representa vida). En cada iteración (generación) vamos a analizar los vecinos adyacentes, incluyendo las diagonales de cada célula, con el fin de determinar su siguiente estado para la siguiente generación. Para esto se implementó en Python un motor donde está toda la lógica incluyendo las reglas del juego y, por otro lado, usamos Pygame para darle vida visualmente al comportamiento de este juego.
 
 ## Optimizaciones
 
 ### Analizando estados
 
-Al probar tableros de gran tamaño, el enfoque tradicional para calcular cada generación resultaba muy ineficiente. Recorrer una matriz de $10000 \times 10000$ requiere evaluar 100.000.000 de posiciones en cada iteración, con una complejidad de $O(N \times M)$ (o $O(N^2)$ en tableros cuadrados).
+A medida que desarrollaba el juego y probaba múltiples configuraciones con diferentes tamaños de mundos finitos, noté que a medida que el mundo se hace más grande, la complejidad computacional para generar cada generación aumenta. Para mundos muy grandes el algoritmo resulta lento, ya que le toca analizar las $N \times M$ posiciones del tablero. Supongamos que tenemos una matriz de $10000 \times 10000$: significaría que en cada generación se tendrían que analizar 100.000.000 de posiciones, lo que se reduce a tener una complejidad de $O(N \times M)$ (o $O(N^2)$ en matrices cuadradas), haciendo muy lento el juego para matrices muy grandes.
 
 <div>
 <img style="display: block; margin: 0 auto" src="docs/image-8.png">
@@ -57,9 +55,11 @@ Al probar tableros de gran tamaño, el enfoque tradicional para calcular cada ge
 
 ##### Solución
 
-Para solucionar esto me planteé la siguiente duda: *¿Realmente es necesario evaluar todo el tablero?* 
+Analizando el problema a fondo, en mi mente surgió la pregunta: *¿Y si no tuviera que analizar todo el mundo?* 
 
-Las únicas celdas que pueden cambiar de estado o hacer que sus vecinas cambien son las células vivas y su entorno inmediato. Por lo tanto, en lugar de analizar las $N \times M$ posiciones del tablero, basta con centrarse únicamente en las posiciones donde hay una célula viva y su vecindad de $3 \times 3$. Esto reduce la complejidad computacional de depender del tamaño total del mapa a depender únicamente de $K$, donde $K$ es el número de células vivas en la generación actual ($O(K)$).
+Esto me llevó a pensar en una solución ingeniosa donde, en vez de tener que analizar $N \times M$ posiciones, solo analizo las posiciones que tienen más probabilidad de mutar: **las células vivas y su entorno inmediato**. Centrarnos en las posiciones que tienen una célula viva (ya que son las que tienen el poder de determinar el estado de las células a su alrededor) nos permite reducir el problema de analizar todo el mundo a simplemente enfocarnos en $N$, donde $N$ representa el número de células vivas en cada generación ($O(N)$).
+
+Para esto, en vez de analizar todo el mundo, solo me centro en analizar las posiciones alrededor de una célula viva ($3 \times 3$, es decir, 9 celdas candidatas). A su vez, para determinar si cada una de esas 9 candidatas vive o muere en la siguiente generación, es necesario analizar nuevamente sus $3 \times 3$ (9) celdas vecinas. Esto nos da una complejidad de $N \times (3 \times 3) \times (3 \times 3) = N \times 81$ operaciones por generación.
 
 <div>
 <img style="display: block; margin: 0 auto" src="docs/image-7.png">
@@ -68,38 +68,76 @@ Las únicas celdas que pueden cambiar de estado o hacer que sus vecinas cambien 
 
 ##### Ejemplo práctico
 
-Consideremos la imagen anterior con una matriz de $25 \times 25$ ($625$ celdas) y solo $5$ células vivas:
-- **Enfoque ingenuo:** Evalúa las $625$ posiciones de la matriz.
-- **Enfoque optimizado:** Solamente explora las $5$ células vivas y sus vecindades inmediatas ($5 \times 9 = 45$ evaluaciones potenciales), reduciendo de $625$ a menos de $45$ operaciones por ciclo.
+Analizando la generación de la imagen anterior donde tenemos un mundo de $25 \times 25$ ($625$ posiciones totales) y solo hay 5 células vivas ($N = 5$):
+
+- **Enfoque tradicional:** Evalúa las $625$ posiciones de la matriz.
+- **Enfoque enfocado en células vivas:** Evaluamos $5 \text{ células} \times 9 \text{ candidatas} \times 9 \text{ vecinos} = 405 \text{ iteraciones}$.
+
+Como se observa, $405 < 625$, logrando reducir el número de operaciones requeridas por ciclo.
 
 #### Efectos secundarios
 
-- **Tableros densos:** Si el tablero se llena casi por completo de células vivas, el valor de $K$ se aproxima al tamaño total del tablero, igualando la complejidad del enfoque inicial. No obstante, dada la naturaleza del juego, es muy inusual que la densidad de células vivas cubra la totalidad de la matriz.
-- **Vecindades superpuestas:** Si dos células vivas están muy cerca, el área de $3 \times 3$ de cada una evaluará las mismas celdas vecinas múltiples veces.
+Ahora vale la pena detenernos a analizar estos puntos:
+
+- **¿Qué pasa si hay muchas células vivas en mi tablero?:** A medida que la cantidad de células vivas $N$ aumenta, el total de operaciones $81N$ crece hasta igualar o superar la complejidad inicial de analizar el tablero completo. Afortunadamente, gracias a las reglas del juego, es prácticamente imposible que la densidad de células vivas cubra la totalidad de la matriz de forma sostenida.
+- **Ineficiencia en tableros pequeños o densos:** En un tablero de $10 \times 10$ ($100$ celdas totales) con solo $5$ células vivas, la fórmula requeriría $5 \times 81 = 405$ iteraciones. En este caso $405 > 100$, lo que resulta contradictorio ya que estaríamos iterando más veces que el tamaño de la matriz debido a la sobrecarga de reevaluar zonas vecinas.
+
+Más adelante veremos cómo mitigar y resolver esta ineficiencia aplicando **programación dinámica**.
 
 ---
 
 ### Subproblemas repetidos
 
-Aunque redujimos la evaluación al entorno de las células vivas, surge un problema cuando las células están agrupadas. Por ejemplo:
+Logramos reducir la búsqueda enfocándonos en las células vivas, pero analicemos qué pasa con las células que están muy cerca entre sí. Por ejemplo:
 
 <div>
 <img style="display: block; margin: 0 auto" src="docs/image-3.png">
 <p style="text-align: center;">Matriz de 3x5, Células vivas: 3</p>
 </div>
 
-En este mini mundo de $3 \times 5$, tenemos células vivas en las posiciones `(1,1)`, `(1,2)` y `(1,3)`.
-Al evaluar la célula `(1,1)`, analizamos las celdas a su alrededor:
-`{(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2)}`
+En este mini mundo de $3 \times 5$, podemos observar que tenemos células vivas en las posiciones `(1,1)`, `(1,2)` y `(1,3)`. Aplicando nuestro algoritmo a la célula `(1,1)`, analizamos las posiciones que esta célula viva puede influir a mutar, así que tenemos las siguientes posiciones incluyéndose a sí misma: `(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2)`.
 
-Al pasar a la siguiente célula viva en `(1,2)`, se generan las celdas:
-`{(0,1), (0,2), (0,3), (1,1), (1,2), (1,3), (2,1), (2,2), (2,3)}`
+El algoritmo recorre cada una de estas posiciones y determina su estado para la próxima generación quedando como resultado:
 
-Como se observa, posiciones como `(0,1)`, `(0,2)`, `(1,1)`, `(1,2)`, `(2,1)` y `(2,2)` se evaluarían dos veces en el mismo turno, desperdiciando ciclos de procesamiento.
+
+```
+
+(0,0) -> 0
+(0,1) -> 0
+(0,2) -> 1
+(1,0) -> 0
+(1,1) -> 0
+(1,2) -> 1
+(2,0) -> 0
+(2,1) -> 0
+(2,2) -> 1
+
+```
+
+Hasta el momento bien, hemos replicado cómo se comporta el algoritmo. Pero pasemos a analizar la siguiente célula viva `(1,2)`. Generamos las posiciones vecinas: `(0,1), (0,2), (0,3), (1,1), (1,2), (1,3), (2,1), (2,2), (2,3)` y procedemos a determinar sus futuros estados:
+
+
+```
+
+(0,1) -> 0 <- Repetido
+(0,2) -> 1 <- Repetido
+(0,3) -> 0
+(1,1) -> 0
+(1,2) -> 1 <- Repetido
+(1,3) -> 0
+(2,1) -> 0
+(2,2) -> 1 <- Repetido
+(2,3) -> 0
+
+```
+
+Como se puede observar, hay estados que en el paso anterior ya fueron calculados por el hecho de estar cerca de la célula viva actual `(1,2)`. Así que estamos verificando células que ya hemos calculado anteriormente.
 
 #### Solución
 
-Para evitar procesar celdas duplicadas, implementamos un control de memoización mediante un conjunto de datos (**`set()`**). A medida que calculamos el nuevo estado de una celda en una iteración, guardamos sus coordenadas en el `set`. Antes de calcular cualquier celda vecina, verificamos si ya existe en el conjunto; si es así, se omite. De este modo nos aseguramos de evaluar cada posición **exactamente una vez** por generación.
+Como se pudo observar, estamos analizando subproblemas que ya hemos procesado previamente. Para solucionar esto y resolver los efectos secundarios, utilizamos un enfoque de **programación dinámica (*top-down* con memoización)**. 
+
+A medida que verificamos cada posición, la almacenamos en un **`set()`** para posteriormente, en cada iteración, consultar si esa celda ya fue procesada. De este modo evitamos calcular de nuevo subproblemas repetidos, garantizando evaluar cada posición candidata **exactamente una vez** por generación.
 
 ## Instalación y Uso
 
