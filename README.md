@@ -55,7 +55,7 @@ While testing setups on larger finite grids, I noticed that computational overhe
 
 ##### Solution
 
-Looking closely at the problem raised a natural question: *What if we don't need to scan the entire world?*
+Looking closely at the problem raised a natural question: _What if we don't need to scan the entire world?_
 
 Instead of checking all $N \times M$ positions, we can restrict our focus to the areas most likely to change state: **live cells and their immediate neighborhood**. Concentrating on live cells (since they drive neighbor transitions) reduces scanning the entire grid down to tracking $N$ live cells per generation ($O(N)$).
 
@@ -143,8 +143,8 @@ To run and view the simulation locally, follow these steps:
 
 Ensure you have installed:
 
-* **Python 3.x** (preferably 3.12 or higher).
-* **Pip** (Python package manager).
+- **Python 3.x** (preferably 3.12 or higher).
+- **Pip** (Python package manager).
 
 ### Installation Steps
 
@@ -170,7 +170,7 @@ source venv/bin/activate
 ```
 
 3. **Install dependencies:**
-This project relies on `pygame` for graphics rendering and `numpy`.
+   This project relies on `pygame` for graphics rendering and `numpy`.
 
 ```bash
 pip install -r requirements.txt
@@ -188,10 +188,10 @@ python src/main.py
 
 ### Controls
 
-* **Left Click:** Place a live cell.
-* **Right Click:** Remove a live cell.
-* **S Key:** Start / Pause simulation.
-* **C Key:** Clear board and reset world.
-* **B Key:** Toggle grid visibility.
-* **M Key:** Decrease time between generations (faster).
-* **N Key:** Increase time between generations (slower).
+- **Left Click:** Place a live cell.
+- **Right Click:** Remove a live cell.
+- **SPACE Key:** Start / Pause simulation.
+- **C Key:** Clear board and reset world.
+- **B Key:** Toggle grid visibility.
+- **N Key:** Decrease time between generations (faster).
+- **M Key:** Increase time between generations (slower).

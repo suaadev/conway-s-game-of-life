@@ -39,7 +39,6 @@ class MainWindow:
 
                 if event.type == pygame.VIDEORESIZE:
                     size = pygame.display.get_window_size()
-
                     self.simulation.resize(size[0], size[1])
 
                 if self.simulation.simulation and event.type == pygame.MOUSEBUTTONUP:
@@ -47,7 +46,7 @@ class MainWindow:
 
                 if event.type == pygame.KEYDOWN:
                     keys = pygame.key.get_pressed()
-                    if keys[pygame.K_s]:
+                    if keys[pygame.K_SPACE]:
                         if not self.simulation.simulation:
                             self.simulation.start()
                         else:
@@ -60,13 +59,13 @@ class MainWindow:
                         self.simulation.switch_cell_border()
 
                     if (
-                        keys[pygame.K_m]
+                        keys[pygame.K_n]
                         and current_window_to_simulate < self.MAX_WINDOW_MS_TO_SIMULATE
                     ):
                         current_window_to_simulate += 10
 
                     if (
-                        keys[pygame.K_n]
+                        keys[pygame.K_m]
                         and current_window_to_simulate > self.MIN_WINDOW_MS_TO_SIMULATE
                     ):
                         current_window_to_simulate -= 10
