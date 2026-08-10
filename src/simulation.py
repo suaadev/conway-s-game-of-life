@@ -5,12 +5,9 @@ import pygame
 
 from game_egine import GameEngine
 
-## TODO: CORREGIR PROBLEMA DE TOLIDE EN SCANING LIMITS DEL GAME ENGIME, DEJAR EL LIMITE POR LIMITE GENERAL O POR VENTANA DE SCANING
-## TODO: corregir inserncion de valores
-
 
 class Simulation:
-    BACKGROUND_COLOR = (85, 15, 15)
+    BACKGROUND_COLOR = (15, 15, 15)
     CELL_ALIVE_COLOR = (198, 229, 245)
     CELL_DEAD_COLOR = (0, 0, 0)
     CELL_SIZE = 10
@@ -23,7 +20,7 @@ class Simulation:
         self.surface_height = parent_surface_size[1]
         self.surface.fill(self.BACKGROUND_COLOR)
         self.surface_rect = self.surface.get_rect(topleft=(0, 0))
-        self.cell_border = 0
+        self.cell_border = 1
         self.simulation = False
         self.build_simulation()
 
